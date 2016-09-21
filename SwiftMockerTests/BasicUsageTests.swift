@@ -33,11 +33,19 @@ class BasicUsageTests: XCTestCase {
         XCTAssertEqual(1, mockDependency.mocker.getInvocationCount(forMethod: "doSomethingElse"))
     }
     
+    func testVerifyCorrectParametersWerePassed() {
+        let _ = subject.doSomething("Hello!")
+        
+        let parameter = mockDependency.mocker.getParameter(forMethod: "doSomethingElse", atPosition: 0, forType: String.self)
+        
+        XCTAssertEqual("Hello!", parameter)
+    }
+    
     class MockDependencyClass: SomeDependencyClass {
         let mocker = SwiftMocker()
         
         override func doSomethingElse(input: String) -> String {
-            mocker.recordInvocation(forMethod: "doSomethingElse")
+            mocker.recordInvocation(forMethod: "doSomethingElse", withParams: [input])
             
             guard let result = mocker.getReturnValue(forMethod: "doSomethingElse", forType: String.self) else {
                 return ""

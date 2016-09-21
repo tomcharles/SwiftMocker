@@ -28,6 +28,19 @@ public class SwiftMocker {
         invocation.append(paramList)
     }
     
+    public func getParameter<T>(forMethod methodName: String, atPosition position: Int, forType type: T.Type) -> T? {
+        guard let invocationsForMethod = invocations[methodName] else { return nil }
+        
+        let parameters = invocationsForMethod[0]
+        
+        guard position < parameters.count,
+            let parameter = parameters[position] as? T else {
+                return nil
+        }
+        
+        return parameter
+    }
+    
     public func getInvocationCount(forMethod methodName: String) -> Int {
         guard let invocation = invocations[methodName] else {
             return 0
