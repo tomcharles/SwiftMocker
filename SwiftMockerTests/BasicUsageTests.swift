@@ -37,8 +37,15 @@ class BasicUsageTests: XCTestCase {
         let _ = subject.doSomething("Hello!")
         
         let parameter = mockDependency.mocker.getParameter(forMethod: "doSomethingElse", atPosition: 0, forType: String.self)
+        let secondTryParameter = mockDependency.mocker.getParameter(forMethod: "doSomethingElse", atPosition: 0, forType: String.self, onNthInvocation: 1)
         
         XCTAssertEqual("Hello!", parameter)
+        XCTAssertEqual("crap!", secondTryParameter)
+    }
+    
+    func testVerifyCorrectParametersWerePassedOnSecondInvocation() {
+        let _ = subject.doSomething("Hello!")
+        
     }
     
     class MockDependencyClass: SomeDependencyClass {
@@ -66,6 +73,7 @@ class DoesSomethingClass {
     
     func doSomething(input: String) -> String {
         let someResponse = someDependency.doSomethingElse(input)
+        let _ = someDependency.doSomethingElse("crap!")
         return "Modified the response \(someResponse)!"
     }
 }

@@ -21,17 +21,17 @@ public class SwiftMocker {
     }
     
     public func recordInvocation(forMethod methodName: String, withParams paramList: [Any]) {
-        guard var invocation = invocations[methodName] else {
+        guard let invocationsForMethod = invocations[methodName] else {
             invocations[methodName] = [paramList]
             return
         }
-        invocation.append(paramList)
+        invocations[methodName] = invocationsForMethod + [paramList]
     }
     
-    public func getParameter<T>(forMethod methodName: String, atPosition position: Int, forType type: T.Type) -> T? {
-        guard let invocationsForMethod = invocations[methodName] else { return nil }
+    public func getParameter<T>(forMethod methodName: String, atPosition position: Int, forType type: T.Type, onNthInvocation n: Int) -> T? {
+        guard let invocationsForMethod = invocations[methodName] where n < invocationsForMethod.count else { return nil }
         
-        let parameters = invocationsForMethod[0]
+        let parameters = invocationsForMethod[n]
         
         guard position < parameters.count,
             let parameter = parameters[position] as? T else {
@@ -41,11 +41,15 @@ public class SwiftMocker {
         return parameter
     }
     
+    public func getParameter<T>(forMethod methodName: String, atPosition position: Int, forType type: T.Type) -> T? {
+        return getParameter(forMethod: methodName, atPosition: position, forType: type, onNthInvocation: 0)
+    }
+    
     public func getInvocationCount(forMethod methodName: String) -> Int {
-        guard let invocation = invocations[methodName] else {
+        guard let invocationsForMethod = invocations[methodName] else {
             return 0
         }
-        return invocation.count
+        return invocationsForMethod.count
     }
     
     public func setReturnValue(forMethod methodName: String, withReturnValue returnValue: Any) {
