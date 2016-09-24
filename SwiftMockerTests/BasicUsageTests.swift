@@ -49,9 +49,9 @@ class BasicUsageTests: XCTestCase {
     }
     
     class MockDependencyClass: SomeDependencyClass {
-        let mocker = SwiftMocker()
+        let mocker = SwiftMocker
         
-        override func doSomethingElse(input: String) -> String {
+        override func doSomethingElse(_ input: String) -> String {
             mocker.recordInvocation(forMethod: "doSomethingElse", withParams: [input])
             
             guard let result = mocker.getReturnValue(forMethod: "doSomethingElse", forType: String.self) else {
@@ -71,7 +71,7 @@ class DoesSomethingClass {
         self.someDependency = someDependency
     }
     
-    func doSomething(input: String) -> String {
+    func doSomething(_ input: String) -> String {
         let someResponse = someDependency.doSomethingElse(input)
         let _ = someDependency.doSomethingElse("crap!")
         return "Modified the response \(someResponse)!"
@@ -80,7 +80,7 @@ class DoesSomethingClass {
 
 class SomeDependencyClass {
     
-    func doSomethingElse(input: String) -> String {
+    func doSomethingElse(_ input: String) -> String {
         return "I've done something to \(input)"
     }
 }
